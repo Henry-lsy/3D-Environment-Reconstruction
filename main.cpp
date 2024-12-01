@@ -74,127 +74,12 @@ void visualizeCameraPosesAndPoints(const vector<cv::Mat>& rotations, const vecto
     window.spin();
 }
 
-// void init_structure(
-// 	Mat K,
-// 	vector<vector<KeyPoint>>& key_points_for_all,
-// 	vector<vector<Vec3b>>& colors_for_all,
-// 	vector<vector<DMatch>>& matches_for_all,
-// 	vector<Point3f>& structure,
-// 	vector<vector<int>>& correspond_struct_idx,
-// 	vector<Vec3b>& colors,
-// 	vector<Mat>& rotations,
-// 	vector<Mat>& motions
-// )
-// {
-// 	// 计算头两幅图像之间的变换矩阵
-// 	vector<Point2f> p1, p2;
-// 	vector<Vec3b> c2;
-// 	Mat R, T;	// 旋转矩阵和平移向量
-// 	Mat mask;	// mask中大于零的点代表匹配点，等于零的点代表失配点
-// 	get_matched_points(key_points_for_all[0], key_points_for_all[1], matches_for_all[0], p1, p2);
-// 	get_matched_colors(colors_for_all[0], colors_for_all[1], matches_for_all[0], colors, c2);
-// 	find_transform(K, p1, p2, R, T, mask);	// 三角分解得到R， T 矩阵
-
-// 	// 对头两幅图像进行三维重建
-// 	maskout_points(p1, mask);
-// 	maskout_points(p2, mask);
-// 	maskout_colors(colors, mask);
-
-// 	Mat R0 = Mat::eye(3, 3, CV_64FC1);
-// 	Mat T0 = Mat::zeros(3, 1, CV_64FC1);
-// 	reconstruct(K, R0, T0, R, T, p1, p2, structure);	// 三角化
-// 	// 保存变换矩阵
-// 	rotations = { R0, R };
-// 	motions = { T0, T };
-
-// 	// 将correspond_struct_idx的大小初始化为与key_points_for_all完全一致
-// 	correspond_struct_idx.clear();
-// 	correspond_struct_idx.resize(key_points_for_all.size());
-// 	for (int i = 0; i < key_points_for_all.size(); ++i)
-// 	{
-// 		correspond_struct_idx[i].resize(key_points_for_all[i].size(), -1);
-// 	}
-
-// 	// 填写头两幅图像的结构索引
-// 	int idx = 0;
-// 	vector<DMatch>& matches = matches_for_all[0];
-// 	for (int i = 0; i < matches.size(); ++i)
-// 	{
-// 		if (mask.at<uchar>(i) == 0)
-// 		{
-// 			continue;
-// 		}
-
-// 		correspond_struct_idx[0][matches[i].queryIdx] = idx;	// 如果两个点对应的idx 相等 表明它们是同一特征点 idx 就是structure中对应的空间点坐标索引
-// 		correspond_struct_idx[1][matches[i].trainIdx] = idx;
-// 		++idx;
-// 	}
-// }
 inline cv::Scalar get_color(float depth) {
   float up_th = 50, low_th = 10, th_range = up_th - low_th;
   if (depth > up_th) depth = up_th;
   if (depth < low_th) depth = low_th;
   return cv::Scalar(255 * depth / th_range, 0, 255 * (1 - depth / th_range));
 }
-
-
-// void init_structure(
-// 	Mat K,
-// 	vector<vector<KeyPoint>>& key_points_for_all,
-// 	vector<vector<Vec3b>>& colors_for_all,
-// 	vector<vector<DMatch>>& matches_for_all,
-// 	vector<Point3f>& structure,
-// 	vector<vector<int>>& correspond_struct_idx,
-// 	vector<Vec3b>& colors,
-// 	vector<Mat>& rotations,
-// 	vector<Mat>& motions
-// )
-// {
-// 	// 计算头两幅图像之间的变换矩阵
-// 	vector<Point2f> p1, p2;
-// 	vector<Vec3b> c2;
-// 	Mat R, T;	// 旋转矩阵和平移向量
-// 	Mat mask;	// mask中大于零的点代表匹配点，等于零的点代表失配点
-// 	get_matched_points(key_points_for_all[0], key_points_for_all[1], matches_for_all[0], p1, p2);
-// 	get_matched_colors(colors_for_all[0], colors_for_all[1], matches_for_all[0], colors, c2);
-// 	find_transform(K, p1, p2, R, T, mask);	// 三角分解得到R， T 矩阵
-// 	std::cout << "R is " << R << std::endl; 
-// 	std::cout << "T is " << T << std::endl; 
-// 	// 对头两幅图像进行三维重建
-// 	maskout_points(p1, mask);
-// 	maskout_points(p2, mask);
-// 	maskout_colors(colors, mask);
-
-// 	Mat R0 = Mat::eye(3, 3, CV_64FC1);
-// 	Mat T0 = Mat::zeros(3, 1, CV_64FC1);
-// 	reconstruct(K, R0, T0, R, T, p1, p2, structure);	// 三角化
-// 	// 保存变换矩阵
-// 	rotations = { R0, R };
-// 	motions = { T0, T };
-
-// 	// 将correspond_struct_idx的大小初始化为与key_points_for_all完全一致
-// 	correspond_struct_idx.clear();
-// 	correspond_struct_idx.resize(key_points_for_all.size());
-// 	for (int i = 0; i < key_points_for_all.size(); ++i)
-// 	{
-// 		correspond_struct_idx[i].resize(key_points_for_all[i].size(), -1);
-// 	}
-
-// 	// 填写头两幅图像的结构索引
-// 	int idx = 0;
-// 	vector<DMatch>& matches = matches_for_all[0];
-// 	for (int i = 0; i < matches.size(); ++i)
-// 	{
-// 		if (mask.at<uchar>(i) == 0)
-// 		{
-// 			continue;
-// 		}
-
-// 		correspond_struct_idx[0][matches[i].queryIdx] = idx;	// 如果两个点对应的idx 相等 表明它们是同一特征点 idx 就是structure中对应的空间点坐标索引
-// 		correspond_struct_idx[1][matches[i].trainIdx] = idx;
-// 		++idx;
-// 	}
-// }
 
 void get_objpoints_and_imgpoints(
 	vector<DMatch>& matches,
